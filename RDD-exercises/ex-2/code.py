@@ -1,6 +1,5 @@
 import sys
 import os
-from operator import add
 from pathlib import Path
 
 from pyspark.sql import SparkSession
