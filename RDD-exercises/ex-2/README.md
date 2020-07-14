@@ -1,4 +1,4 @@
-# Log filtering
+# Log analysis
 ## Input data: log of a web server (i.e., a textual file)
 Each line of the file is associated  with a URL request
 
