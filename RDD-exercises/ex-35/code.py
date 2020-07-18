@@ -9,7 +9,7 @@ from pyspark.sql.functions import *
 if __name__ == "__main__":
 
     # Create an instance of spark
-    spark = SparkSession.builder.appName('Exercise-5').getOrCreate()
+    spark = SparkSession.builder.appName('Exercise-35').getOrCreate()
 
     # Current path
     absolute_path = Path().absolute()
@@ -24,10 +24,13 @@ if __name__ == "__main__":
     max_temp = lines.agg({'_c2':'max'}).collect()[0][0]
 
     # Filter lines containing the previous temperature
-    max_temp_lines = lines.where(lines._c2 == max_temp).rdd.map(lambda x: ','.join(x)).collect()
+    max_temp_lines = lines.where(lines._c2 == max_temp)
+
+    # Get the dates of such lines
+    max_temp_dates = max_temp_lines.select('_c1').rdd.map(lambda x: ','.join(x)).collect()
 
     # Print the result on the standard output
-    print('\n'.join(max_temp_lines))
+    print('\n'.join(max_temp_dates))
     
     # Stop spark
     spark.stop()

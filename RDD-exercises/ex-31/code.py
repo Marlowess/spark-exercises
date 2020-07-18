@@ -8,7 +8,7 @@ from pyspark.sql import SparkSession
 if __name__ == "__main__":
 
     # Create an instance of spark
-    spark = SparkSession.builder.appName('Exercise-1').getOrCreate()
+    spark = SparkSession.builder.appName('Exercise-31').getOrCreate()
 
     # Current path
     absolute_path = Path().absolute()
@@ -25,8 +25,11 @@ if __name__ == "__main__":
     # Filter out data not containing the work 'google'
     lines_w_google = lines.filter(lambda x: 'google' in x)
 
+    # Take unique IPs
+    unique_ips = lines_w_google.map(lambda x: str.split(x, ' ')[0]).distinct()
+
     # Save data on the output file
-    lines_w_google.coalesce(1).saveAsTextFile(output_path)
+    unique_ips.coalesce(1).saveAsTextFile(output_path)
     
     # Stop spark
     spark.stop()

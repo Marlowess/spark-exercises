@@ -3,12 +3,13 @@ import os
 from pathlib import Path
 
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
 
 
 if __name__ == "__main__":
 
     # Create an instance of spark
-    spark = SparkSession.builder.appName('Exercise-3').getOrCreate()
+    spark = SparkSession.builder.appName('Exercise-33').getOrCreate()
 
     # Current path
     absolute_path = Path().absolute()
@@ -19,11 +20,11 @@ if __name__ == "__main__":
     # Input data from CSV file
     lines = spark.read.csv(input_path)
 
-    # Get max temperature
-    max_temp = lines.agg({"_c2":"max"}).collect()[0][0]
+    # Get top-3 temperatures
+    top_k_temps = lines.orderBy(desc('_c2')).select('_c2').take(3)
 
     # Print the result on the standard output
-    print(max_temp)
+    print('\n'.join(r._c2 for r in top_k_temps))
     
     # Stop spark
     spark.stop()

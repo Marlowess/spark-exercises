@@ -9,7 +9,7 @@ from pyspark.sql.functions import *
 if __name__ == "__main__":
 
     # Create an instance of spark
-    spark = SparkSession.builder.appName('Exercise-4').getOrCreate()
+    spark = SparkSession.builder.appName('Exercise-34').getOrCreate()
 
     # Current path
     absolute_path = Path().absolute()
@@ -20,11 +20,14 @@ if __name__ == "__main__":
     # Input data from CSV file
     lines = spark.read.csv(input_path)
 
-    # Get top-3 temperatures
-    top_k_temps = lines.orderBy(desc('_c2')).select('_c2').take(3)
+    # First get the maximum temperature
+    max_temp = lines.agg({'_c2':'max'}).collect()[0][0]
+
+    # Filter lines containing the previous temperature
+    max_temp_lines = lines.where(lines._c2 == max_temp).rdd.map(lambda x: ','.join(x)).collect()
 
     # Print the result on the standard output
-    print('\n'.join(r._c2 for r in top_k_temps))
+    print('\n'.join(max_temp_lines))
     
     # Stop spark
     spark.stop()
