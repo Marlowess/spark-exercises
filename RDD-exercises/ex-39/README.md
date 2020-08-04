@@ -1,9 +1,9 @@
-# Pollution  analysis
+# Critical dates analysis
 ## Input data: a textual csv file containing the daily value of PM10 for a set of sensors
 Each line of the files has the following format:<br> `sensorId,date,PM10 value (μg/m3)\n`
 
-## Output: he sensors with at least 2 readings with a PM10 value greater than the critical threshold 50
-Print on the standard output the sensorIds of the selected sensors and also the number of times each of those sensors is associated with a PM10 value greater than 50
+## Output: a line for each sensor on the standard output
+Each line contains a sensorIdand the list of dates with a PM10 values greater than 50 for that sensor.
 
 ---
 ## Example of data
@@ -17,4 +17,5 @@ s1,2016-01-03,55.5<br>
 s2,2016-01-03,52.5<br>
 
 ### Output data
-(s1,2)
+(s1, [2016-01-02, 2016-01-03])<br>
+(s2, [2016-01-03])
