@@ -3,7 +3,13 @@ import os
 from pathlib import Path
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
+
+def split_data(line):
+    """
+    Split each line into columns
+    """
+    data = str.split(line, ',')
+    return [data[0], data[2]]
 
 
 if __name__ == "__main__":
@@ -17,11 +23,17 @@ if __name__ == "__main__":
     # Input path
     input_path = os.path.join(absolute_path, 'input.csv')
 
-    # Input data from CSV file
-    lines = spark.read.csv(input_path)
+    # Get a spark context
+    sc = spark.sparkContext
 
-    # Group by sensorId and compute the max value for each group
-    max_temp_by_sensor = lines.groupBy(['_c0']).agg({'_c2':'max'}).rdd.map(lambda x: ','.join(x)).collect()
+    # Input data from CSV file
+    lines = sc.textFile(input_path)
+
+    # Map each line to a pair (sensorID, temp)
+    sensor_temp = lines.map(split_data)
+
+    # Select the maximum temperature for each sensor
+    max_temp_by_sensor = sensor_temp.reduceByKey(lambda x,y : x if x > y else y).collect()
 
     # Print the result on the standard output
     print(max_temp_by_sensor)

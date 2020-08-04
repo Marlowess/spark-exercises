@@ -3,8 +3,13 @@ import os
 from pathlib import Path
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
 
+def split_data(line):
+    """
+    Return the temperature of each line
+    """
+    data = str.split(line, ',')
+    return float(data[2])
 
 if __name__ == "__main__":
 
@@ -17,11 +22,14 @@ if __name__ == "__main__":
     # Input path
     input_path = os.path.join(absolute_path, 'input.csv')
 
-    # Input data from CSV file
-    lines = spark.read.csv(input_path)
+    # Get a spark context
+    sc = spark.sparkContext
 
-    # Select _c2 column only and compute the mean
-    mean_temp = lines.agg({'_c2':'avg'}).collect()[0][0]
+    # Input data from CSV file
+    lines = sc.textFile(input_path)
+
+    # Select the temperature column only and compute the mean
+    mean_temp = lines.map(split_data).mean()
 
     # Print the result on the standard output
     print('%2.2f' % mean_temp)

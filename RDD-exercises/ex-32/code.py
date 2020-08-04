@@ -4,6 +4,13 @@ from pathlib import Path
 
 from pyspark.sql import SparkSession
 
+def split_data(line):
+    """
+    Return the temperature of each line
+    """
+    data = str.split(line, ',')
+    return data[2]
+
 
 if __name__ == "__main__":
 
@@ -16,11 +23,17 @@ if __name__ == "__main__":
     # Input path
     input_path = os.path.join(absolute_path, 'input.csv')
 
-    # Input data from CSV file
-    lines = spark.read.csv(input_path)
+    # Get a spark context
+    sc = spark.sparkContext
 
-    # Get max temperature
-    max_temp = lines.agg({"_c2":"max"}).collect()[0][0]
+    # Input data from CSV file
+    lines = sc.textFile(input_path)
+
+    # Extract temperature from sensors data
+    temperatures = lines.map(split_data)
+
+    # Take the maximum temperature
+    max_temp = temperatures.reduce(lambda x,y : x if x > y else y)
 
     # Print the result on the standard output
     print(max_temp)

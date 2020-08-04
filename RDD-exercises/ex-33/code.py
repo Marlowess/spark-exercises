@@ -3,7 +3,13 @@ import os
 from pathlib import Path
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
+
+def split_data(line):
+    """
+    Return the temperature of each line
+    """
+    data = str.split(line, ',')
+    return data[2]
 
 
 if __name__ == "__main__":
@@ -17,14 +23,20 @@ if __name__ == "__main__":
     # Input path
     input_path = os.path.join(absolute_path, 'input.csv')
 
+    # Get a spark context
+    sc = spark.sparkContext
+
     # Input data from CSV file
-    lines = spark.read.csv(input_path)
+    lines = sc.textFile(input_path)
 
-    # Get top-3 temperatures
-    top_k_temps = lines.orderBy(desc('_c2')).select('_c2').take(3)
+    # Get temperatures only
+    temperatures = lines.map(split_data)
 
-    # Print the result on the standard output
-    print('\n'.join(r._c2 for r in top_k_temps))
+    # Get the top-3 temperatures
+    top_3 = temperatures.top(3)
+
+    # Print the temperatures
+    print('\n'.join(top_3))
     
     # Stop spark
     spark.stop()
