@@ -2,11 +2,11 @@
 
 This is a collection of exercises for Spark solved in Python (PySpark).
 
-## Dependencies
-`py4j==0.10.9`<br>
-`pyspark==3.0.0`
+# Clone this repository in your local space, then install a virtualenv for your libraries 
+- Install `virtualenv` using pip > `pip install virtualenv`
+- Create a new virtual environment in this repo > `virtualenv env`
 
-## Install dependencies by prompting
+## Install the dependencies by prompting
 `pip install -r requirements.txt`
 
 ## References
