@@ -4,7 +4,7 @@ lazy-object-proxy==1.4.3
 mccabe==0.6.1
 py4j==0.10.9
 pylint==2.5.3
-pyspark==3.0.0
+pyspark==3.2.2
 six==1.15.0
 toml==0.10.1
 wrapt==1.12.1
